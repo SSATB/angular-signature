@@ -21,6 +21,7 @@ angular.module('signature').directive('signaturePad', ['$window', '$timeout',
         height: '@',
         width: '@',
         notifyDrawing: '&onDrawing',
+        clearOnResize: '=',
       },
       controller: [
         '$scope',
@@ -92,7 +93,9 @@ angular.module('signature').directive('signaturePad', ['$window', '$timeout',
           canvas.getContext("2d").scale(ratio, ratio);
 
           // reset dataurl
-          scope.dataurl = null;
+          var noResize = scope.clearOnResize === 'false' || scope.clearOnResize === '0';
+          if (!noResize)
+            scope.dataurl = null;
         }
 
         scope.onResize();
