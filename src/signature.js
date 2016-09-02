@@ -21,7 +21,6 @@ angular.module('signature').directive('signaturePad', ['$window', '$timeout',
         height: '@',
         width: '@',
         notifyDrawing: '&onDrawing',
-        clearOnResize: '=',
       },
       controller: [
         '$scope',
@@ -75,27 +74,25 @@ angular.module('signature').directive('signaturePad', ['$window', '$timeout',
         canvas = element.find('canvas')[0];
         scope.signaturePad = new SignaturePad(canvas);
         
-        //Resize to fix UI Bootstrap Modal Show problem
-        $timeout(function(){
-            canvas.width = attrs.width;
-            canvas.height = attrs.height; 
-        }, 500);
-
         if (scope.signature && !scope.signature.$isEmpty && scope.signature.dataUrl) {
           scope.signaturePad.fromDataURL(scope.signature.dataUrl);
         }
 
         scope.onResize = function() {
-          var canvas = element.find('canvas')[0];
-          var ratio =  Math.max($window.devicePixelRatio || 1, 1);
-          canvas.width = canvas.offsetWidth * ratio;
-          canvas.height = canvas.offsetHeight * ratio;
-          canvas.getContext("2d").scale(ratio, ratio);
+          var canvas = element.find('canvas')[0],
+              ratio = Math.max($window.devicePixelRatio || 1, 1),
+              w = attrs.width * ratio,
+              h = attrs.height * ratio;
 
-          // reset dataurl
-          var noResize = scope.clearOnResize === 'false' || scope.clearOnResize === '0';
-          if (!noResize)
-            scope.dataurl = null;
+          if (canvas.width !== w || canvas.height !== h) {
+            canvas.width = w;
+            canvas.height = h;
+            canvas.getContext("2d").scale(ratio, ratio);
+
+            // reset dataurl
+            if (!scope.signaturePad.isEmpty())
+              scope.dataurl = null;
+          }
         }
 
         scope.onResize();
