@@ -3,6 +3,7 @@
   "description": "HTML5 canvas based smooth signature drawing as AngularJS directive",
   "license": "MIT",
   "main": "src/signature.js",
+  "version": "v0.1.9",
   "ignore": [],
   "repository": {
     "type": "git",
